@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Dev = require('../models/Dev');
 const ArrayUtils = require('../utils/ArrayUtils');
+const GithubService = require('../services/GithubService');
 
 module.exports = {
   async index(req, res) {
@@ -15,9 +16,7 @@ module.exports = {
     let dev = await Dev.findOne({ githubUsername });
 
     if (!dev) {
-      const githubResponse = await axios.get(`https://api.github.com/users/${githubUsername}`);
-
-      const { name = login, avatar_url: avatarUrl, bio } = githubResponse.data;
+      const { name = login, avatar_url: avatarUrl, bio } = await GithubService.getUser(githubUsername);
 
       const techsAsArray = ArrayUtils.stringAsArray(techs);
 
