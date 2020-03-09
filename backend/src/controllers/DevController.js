@@ -1,5 +1,7 @@
 const axios = require('axios');
 const Dev = require('../models/Dev');
+const { findConnections, sendMessage } = require('../config/websocket');
+
 const ArrayUtils = require('../utils/ArrayUtils');
 const GithubService = require('../services/GithubService');
 
@@ -33,6 +35,11 @@ module.exports = {
         techs: techsAsArray,
         location
       });
+
+      const devsToSendMessageTo = findConnections({ latitude, longitude }, techsAsArray);
+      console.log(devsToSendMessageTo);
+
+      sendMessage(devsToSendMessageTo, 'new-dev', dev);
     }
 
     return res.json(dev);
